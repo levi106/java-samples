@@ -37,12 +37,18 @@ public class ReactorApplication {
 		}
 		LOGGER.info("Thread # {}: enter netty1", Thread.currentThread().getId());
 		return HttpClient.create()
+					 	 .doOnConnect(x -> {
+							LOGGER.info("Thread # {}: doOnConnect", Thread.currentThread().getId());
+						 })
+						 .doOnConnected(x -> {
+							 LOGGER.info("Thread # {}: doOnConnected", Thread.currentThread().getId());
+						 })
 				  		 .get()
 				  		 .uri(url)
 				  		 .responseContent()
 				  		 .aggregate()
 				  		 .asString()
- 					     .log("http-client")
+						 .log("http-client")
 						 .doOnNext (x -> {
 							LOGGER.info("Thread # {}: doOnNext {}", Thread.currentThread().getId(), x.length());
 						 });
@@ -51,5 +57,4 @@ public class ReactorApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ReactorApplication.class, args);
 	}
-
 }
